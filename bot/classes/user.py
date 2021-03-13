@@ -49,6 +49,16 @@ class User(Entity):
                 for dept in Dept.table().find({'user': self.id})]
 
     @staticmethod
-    def get_user(user_id):
+    def get_user(user_id, name=None):
         user = User.table().find_one({'id': str(user_id)})
+        if not user:
+            User.table().insert_one({'id': str(user_id), 'name': name, 'language': Language.EN, 'state': 0})
+            return User(user_id, name)
         return User(user_id, user.name, user.language, user.state)
+
+    def add_person(self, name: str, username: str = None):
+        return Person.table().insert_one(dict(name=name, username=username, user=self.id)).inserted_id
+
+    def add_dept(self, person: Person, amount: int, type: int, detail: str = None):
+        return Dept.table().insert_one(
+            dict(amount=amount, type=type, detail=detail, user=self.id, person=person.id)).inserted_id

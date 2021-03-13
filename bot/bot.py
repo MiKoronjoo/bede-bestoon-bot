@@ -8,6 +8,7 @@ class Bot(Client):
         name = self.__class__.__name__.lower()
         super().__init__(
             session_name=f'{name}.session',
+            config_file='bot.ini',
             workers=16,
             plugins=dict(
                 root="bot.plugins",
